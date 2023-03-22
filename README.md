@@ -7,7 +7,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 In the project directory, you can run:
 
 ### `create .env`
-REACT_APP_API_URL
+REACT_APP_API_URL=
 
 ### `npm start`
 
