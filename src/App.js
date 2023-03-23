@@ -1,11 +1,18 @@
-import { useState, useEffect } from "react";
-import axios from "axios"
+import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import { axiosLogin } from "./store/actions/actions";
+
 import './App.css';
 
 function App() {
+
+  // Crea los envios desde el redux actions
+  const dispatch = useDispatch();
+
+  // Hooks del username y password
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [responseData, setResponseData] = useState({});
+  
 
   const handleUsernameChange = (event) => {
     setUsername(event.target.value);
@@ -15,68 +22,36 @@ function App() {
     setPassword(event.target.value);
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit =   (event) => {
     event.preventDefault();
-
-    axios.post(process.env.REACT_APP_API_URL, {
-      username,
-      password,
-    })
-      .then(response => {
-        console.log(response.data);
-        localStorage.setItem('token', response.data.token);
-        setResponseData(response.data);
-      })
-      .catch(error => {
-        console.log(error);
-      });
+    dispatch(axiosLogin(username, password))
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem('token')
-    setResponseData({})
-  }
-
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      setResponseData({ token });
-    }
-  }, []);
   return (
     <div className="App">
       <header className="App-header">
-        <h3>Ingresar</h3>
+        <h3>Login</h3>
         <form onSubmit={handleSubmit}>
-          <div>
-            <label htmlFor="username">Usuario:</label>
+          <label>
+            Username:
             <input
               type="text"
-              id="username"
               name="username"
               value={username}
               onChange={handleUsernameChange}
             />
-          </div>
-          <div>
-            <label htmlFor="password">Contraseña:</label>
+          </label>
+          <label>
+            Password:
             <input
               type="password"
-              id="password"
               name="password"
               value={password}
               onChange={handlePasswordChange}
             />
-          </div>
-          <button type="submit">Iniciar sesión</button>
+          </label>
+          <button type="submit">Login</button>
         </form>
-        {responseData.token && (
-          <div>
-            <p>Nombre de la empresa: {responseData.persona.nombres}</p>
-            <p>Direccion de la empresa: {responseData.persona.direccion}</p>
-            <button onClick={handleLogout}>x</button>
-          </div>
-        )}
       </header>
     </div>
   )
